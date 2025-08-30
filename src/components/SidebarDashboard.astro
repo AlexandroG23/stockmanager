@@ -5,22 +5,33 @@ const NAV_ITEMS = [
     {
         label: "Dashboard",
         icon: "dashboard",
-        href: "/dashboard",
+        href: "/",
     },
+
     {
-        label: "User",
-        icon: "user",
-        href: "/dashboard/users",
-    },
-    {
-        label: "Account",
-        icon: "account",
-        href: "/dashboard/account",
-    },
-    {
-        label: "Stats",
+        label: "Categorias",
         icon: "stats",
-        href: "/dashboard/stats",
+        href: "/categories",
+    },
+    {
+        label: "Productos",
+        icon: "user",
+        href: "/products",
+    },
+    {
+        label: "Proveedores",
+        icon: "account",
+        href: "/providers",
+    },
+    {
+        label: "Clientes",
+        icon: "stats",
+        href: "/clients",
+    },
+    {
+        label: "Documentos",
+        icon: "stats",
+        href: "/documents",
     },
 ];
 ---
@@ -33,8 +44,8 @@ const NAV_ITEMS = [
             <!-- Logo 1080 > -->
             <a
                 class="flex-none rounded-xl text-xl inline-block font-semibold focus:outline-hidden focus:opacity-80"
-                href="/dashboard"
-                aria-label="NoteApp"
+                href="/"
+                aria-label="StockManager"
             >
                 <Icon
                     name="nav/noteapp"
