@@ -5,6 +5,7 @@ import HeaderDashboard from "@components/HeaderDashboard.astro";
 import SidebarDashboard from "@components/SidebarDashboard.astro";
 
 const { title } = Astro.props;
+const { name } = Astro.props;
 ---
 
 <html lang="es">
@@ -33,7 +34,7 @@ const { title } = Astro.props;
         <!-- ========== END HEADER ========== -->
 
         <!-- ========== BREADCRUMB ========== -->
-        <Breadcrumb />
+        <Breadcrumb name={name} />
         <!-- ========== END BREADCRUMB ========== -->
 
         <!-- ========== SIDEBAR ========== -->
