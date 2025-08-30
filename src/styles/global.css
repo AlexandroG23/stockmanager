@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Opcional: suavizar cambios de color en modo oscuro/claro */
+body {
+    transition: background-color 0.4s ease, color 0.4s ease;
+}

@@ -1,0 +1,77 @@
+---
+import { Icon } from "astro-icon/components";
+
+const NAV_ITEMS = [
+    {
+        label: "Dashboard",
+        icon: "dashboard",
+        href: "/dashboard",
+    },
+    {
+        label: "User",
+        icon: "user",
+        href: "/dashboard/users",
+    },
+    {
+        label: "Account",
+        icon: "account",
+        href: "/dashboard/account",
+    },
+    {
+        label: "Stats",
+        icon: "stats",
+        href: "/dashboard/stats",
+    },
+];
+---
+
+<div
+    class="w-65 h-full hidden fixed inset-y-0 start-0 z-60 bg-white border-e border-gray-200 lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 dark:bg-neutral-800 dark:border-neutral-700"
+>
+    <div class="relative flex flex-col h-full max-h-full">
+        <div class="px-6 pt-4 flex items-center">
+            <!-- Logo 1080 > -->
+            <a
+                class="flex-none rounded-xl text-xl inline-block font-semibold focus:outline-hidden focus:opacity-80"
+                href="/dashboard"
+                aria-label="NoteApp"
+            >
+                <Icon
+                    name="nav/noteapp"
+                    class="w-40 h-full dark:text-white text-orange-500"
+                />
+            </a>
+            <!-- End Logo -->
+        </div>
+
+        <!-- Content -->
+        <div
+            class="h-full overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+        >
+            <nav
+                class="hs-accordion-group p-3 w-full flex flex-col flex-wrap"
+                data-hs-accordion-always-open
+            >
+                <ul class="flex flex-col space-y-1">
+                    <li>
+                        {
+                            NAV_ITEMS.map((item) => (
+                                <a
+                                    href={item.href}
+                                    class="w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-lg text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 dark:text-neutral-200"
+                                >
+                                    <Icon
+                                        name={`form/${item.icon}`}
+                                        size={20}
+                                    />
+                                    {item.label}
+                                </a>
+                            ))
+                        }
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- End Content -->
+    </div>
+</div>

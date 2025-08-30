@@ -1,0 +1,62 @@
+---
+import ThemeToggle from "@components/ThemeToggle.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<header
+    class="sticky top-0 inset-x-0 flex flex-wrap md:justify-start md:flex-nowrap z-48 w-full bg-white border-b border-gray-200 text-sm py-2.5 lg:ps-65 dark:bg-neutral-800 dark:border-neutral-700"
+>
+    <nav class="px-4 sm:px-6 flex basis-full items-center w-full mx-auto">
+        <div class="me-5 lg:me-0 lg:hidden flex items-center">
+            <!-- Logo -->
+            <a
+                class="flex-none rounded-md text-xl inline-block font-semibold focus:outline-hidden focus:opacity-80"
+                href="#"
+            >
+                <span class="text-blue-500">NotaApp</span>
+            </a>
+            <!-- End Logo -->
+        </div>
+
+        <!-- Theme Toggle -->
+        <div
+            class="w-full flex items-center justify-end ms-auto gap-x-1 md:gap-x-3"
+        >
+            <div class="flex flex-row items-center justify-end gap-3">
+                <button
+                    type="button"
+                    class="size-9.5 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-full border border-transparent text-gray-800 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none dark:text-white"
+                >
+                    <Icon name="nav/logoAa" size="24" />
+                </button>
+                <ThemeToggle />
+                <button
+                    id="logout"
+                    class="px-4 py-2 rounded-lg font-medium
+           border border-gray-300 text-gray-800
+           hover:bg-gray-100
+           dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700
+           transition-colors duration-200"
+                >
+                    Cerrar sesión
+                </button>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<script>
+    const logoutBtn = document.getElementById("logout");
+
+    logoutBtn?.addEventListener("click", () => {
+        // Eliminar token
+        localStorage.removeItem("token");
+
+        // Opcional: limpiar cualquier otro dato del usuario
+        localStorage.removeItem("username");
+        localStorage.removeItem("email");
+
+        // Redirigir al login
+        window.location.href = "/login";
+    });
+</script>
