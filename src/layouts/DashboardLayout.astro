@@ -3,6 +3,8 @@ import "@styles/global.css";
 import Breadcrumb from "@components/Breadcrumb.astro";
 import HeaderDashboard from "@components/HeaderDashboard.astro";
 import SidebarDashboard from "@components/SidebarDashboard.astro";
+
+const { title } = Astro.props;
 ---
 
 <html lang="es">
@@ -22,7 +24,7 @@ import SidebarDashboard from "@components/SidebarDashboard.astro";
         <meta name="description" content="StockManager" />
         <meta name="generator" content={Astro.generator} />
 
-        <title>Dashboard - StockManager</title>
+        <title>{title}</title>
     </head>
 
     <body class="bg-gray-50 dark:bg-neutral-900">
