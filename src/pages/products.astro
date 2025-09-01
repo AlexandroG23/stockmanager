@@ -1,5 +1,6 @@
 ---
 import DashboardLayout from "@layouts/DashboardLayout.astro";
+import Product from "@components/product/Product.astro";
 const title = "Productos - StockManager";
 const name = "Productos";
 ---
@@ -13,4 +14,6 @@ const name = "Productos";
     <p class="text-center text-gray-500 dark:text-neutral-400">
         Aqui puedes gestionar tus productos
     </p>
+
+    <Product />
 </DashboardLayout>
