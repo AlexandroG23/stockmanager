@@ -1,0 +1,29 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<div class="w-full max-w-xl mb-8">
+  <label
+    for="buscar-nombre"
+    class="block text-xl font-medium text-gray-700 dark:text-neutral-300 mb-3"
+  >
+    Buscar categoría
+  </label>
+  <div class="relative">
+    <input
+      type="text"
+      id="buscar-nombre"
+      placeholder="Ejemplo: Camisas..."
+      class="w-full pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-800 dark:text-white"
+    />
+    <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+      <Icon name="form/searchcategory" size={18} />
+    </div>
+  </div>
+</div>
+
+<div
+  id="resultado-busqueda"
+  class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+>
+</div>

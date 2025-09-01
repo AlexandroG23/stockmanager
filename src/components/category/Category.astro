@@ -1,6 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
-import ModalCategory from "@components/ModalCategory.astro";
+import ModalCategory from "./ModalCategory.astro";
 ---
 
 <div class="p-6">
@@ -10,7 +10,7 @@ import ModalCategory from "@components/ModalCategory.astro";
             id="btn-nueva"
             class="px-4 py-2 flex gap-2 bg-blue-600 dark:bg-green-600 text-white text-sm font-medium rounded-lg shadow hover:bg-blue-700 dark:hover:bg-green-700"
         >
-            <Icon name="form/plus" size={20}/>
+            <Icon name="form/plus" size={20} />
             Nueva Categoría
         </button>
     </div>
@@ -21,6 +21,5 @@ import ModalCategory from "@components/ModalCategory.astro";
         class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
     >
     </div>
+    <ModalCategory />
 </div>
-
-<ModalCategory />

@@ -101,26 +101,33 @@ import { Icon } from "astro-icon/components";
                 id="btn-si"
                 class="px-4 py-2 flex gap-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
             >
-                <Icon name="form/trash" size={20}/>
+                <Icon name="form/trash" size={20} />
                 Eliminar
             </button>
         </div>
     </div>
 </div>
 
-<!-- Script -->
+<!-- Script Modal + API + Search -->
+
 <script is:inline>
+    const API_URL = "http://127.0.0.1:8000/categorias/";
+
+    // Referencias a elementos
     const modal = document.getElementById("modal-categoria");
     const modalConfirmar = document.getElementById("modal-confirmar");
     const form = document.getElementById("form-categoria");
     const inputNombre = document.getElementById("categoria-nombre");
     const inputDescripcion = document.getElementById("categoria-descripcion");
     const grid = document.getElementById("categorias-grid");
+    const inputBuscar = document.getElementById("buscar-nombre");
+    const resultado = document.getElementById("resultado-busqueda");
 
+    let todasCategorias = [];
     let categoriaIdEdit = null;
     let categoriaIdDelete = null;
 
-    // Helpers
+    // Helpers modal
     function abrirModal(m) {
         m.classList.remove("hidden");
         m.classList.add("flex");
@@ -130,10 +137,9 @@ import { Icon } from "astro-icon/components";
         m.classList.add("hidden");
     }
 
-    async function cargarCategorias() {
-        const res = await fetch("http://127.0.0.1:8000/categorias/");
-        const categorias = await res.json();
-
+    // Renderiza las categorías en el grid principal
+    function renderGrid(categorias) {
+        if (!grid) return; // Si no existe ese grid (por ej. estás en otra página)
         grid.innerHTML = "";
         categorias.forEach((cat) => {
             const card = document.createElement("div");
@@ -155,6 +161,7 @@ import { Icon } from "astro-icon/components";
             grid.appendChild(card);
         });
 
+        // Eventos de editar
         document.querySelectorAll(".btn-editar").forEach((btn) => {
             btn.addEventListener("click", () => {
                 categoriaIdEdit = btn.dataset.id;
@@ -164,6 +171,7 @@ import { Icon } from "astro-icon/components";
             });
         });
 
+        // Eventos de eliminar
         document.querySelectorAll(".btn-eliminar").forEach((btn) => {
             btn.addEventListener("click", () => {
                 categoriaIdDelete = btn.dataset.id;
@@ -172,61 +180,113 @@ import { Icon } from "astro-icon/components";
         });
     }
 
-    // Botones modal categoría
-    document.getElementById("btn-nueva").addEventListener("click", () => {
-        categoriaIdEdit = null;
-        inputNombre.value = "";
-        inputDescripcion.value = "";
-        abrirModal(modal);
-    });
+    // Renderiza las categorías en el buscador
+    function renderBusqueda(lista) {
+        if (!resultado) return;
+        resultado.innerHTML = "";
+        if (lista.length === 0) {
+            resultado.innerHTML = `<p class="text-gray-500 dark:text-gray-300">No se encontraron categorías.</p>`;
+            return;
+        }
+        lista.forEach((cat) => {
+            const card = document.createElement("div");
+            card.className =
+                "flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-800 dark:border-neutral-700 transition hover:shadow-md";
+            card.innerHTML = `
+        <div class="p-4 flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <p class="text-sm font-semibold text-gray-700 dark:text-neutral-200">${cat.nombre}</p>
+            <span class="text-xs text-gray-400">#${cat.id}</span>
+          </div>
+          <p class="text-xs text-gray-500 dark:text-neutral-400">${cat.descripcion || ""}</p>
+        </div>
+      `;
+            resultado.appendChild(card);
+        });
+    }
 
-    document
-        .getElementById("btn-cancelar")
-        .addEventListener("click", () => cerrarModal(modal));
-    document
-        .getElementById("btn-cerrar")
-        .addEventListener("click", () => cerrarModal(modal));
+    // Cargar categorías desde API
+    async function cargarCategorias() {
+        const res = await fetch(API_URL);
+        todasCategorias = await res.json();
+        renderGrid(todasCategorias);
+        renderBusqueda(todasCategorias);
+    }
 
-    // Modal Confirmar
-    document
-        .getElementById("btn-no")
-        .addEventListener("click", () => cerrarModal(modalConfirmar));
-    document.getElementById("btn-si").addEventListener("click", async () => {
-        if (categoriaIdDelete) {
-            await fetch(
-                `http://127.0.0.1:8000/categorias/${categoriaIdDelete}`,
-                {
-                    method: "DELETE",
-                },
+    // Buscar
+    if (inputBuscar) {
+        inputBuscar.addEventListener("input", () => {
+            const query = inputBuscar.value.toLowerCase().trim();
+            const filtradas = todasCategorias.filter((cat) =>
+                cat.nombre.toLowerCase().includes(query),
             );
-            categoriaIdDelete = null;
+            renderBusqueda(filtradas);
+        });
+    }
+
+    // Botones modal
+    if (document.getElementById("btn-nueva")) {
+        document.getElementById("btn-nueva").addEventListener("click", () => {
+            categoriaIdEdit = null;
+            inputNombre.value = "";
+            inputDescripcion.value = "";
+            abrirModal(modal);
+        });
+    }
+    if (document.getElementById("btn-cancelar"))
+        document
+            .getElementById("btn-cancelar")
+            .addEventListener("click", () => cerrarModal(modal));
+    if (document.getElementById("btn-cerrar"))
+        document
+            .getElementById("btn-cerrar")
+            .addEventListener("click", () => cerrarModal(modal));
+    if (document.getElementById("btn-no"))
+        document
+            .getElementById("btn-no")
+            .addEventListener("click", () => cerrarModal(modalConfirmar));
+
+    // Confirmar eliminar
+    if (document.getElementById("btn-si")) {
+        document
+            .getElementById("btn-si")
+            .addEventListener("click", async () => {
+                if (categoriaIdDelete) {
+                    await fetch(`${API_URL}${categoriaIdDelete}`, {
+                        method: "DELETE",
+                    });
+                    categoriaIdDelete = null;
+                    await cargarCategorias();
+                }
+                cerrarModal(modalConfirmar);
+            });
+    }
+
+    // Guardar / editar
+    if (form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const nombre = inputNombre.value.trim();
+            const descripcion = inputDescripcion.value.trim();
+
+            if (categoriaIdEdit) {
+                await fetch(`${API_URL}${categoriaIdEdit}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nombre, descripcion }),
+                });
+            } else {
+                await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nombre, descripcion }),
+                });
+            }
+            cerrarModal(modal);
             await cargarCategorias();
-        }
-        cerrarModal(modalConfirmar);
-    });
+        });
+    }
 
-    // Guardar
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const nombre = inputNombre.value.trim();
-        const descripcion = inputDescripcion.value.trim();
-
-        if (categoriaIdEdit) {
-            await fetch(`http://127.0.0.1:8000/categorias/${categoriaIdEdit}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nombre, descripcion }),
-            });
-        } else {
-            await fetch("http://127.0.0.1:8000/categorias/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nombre, descripcion }),
-            });
-        }
-        cerrarModal(modal);
-        await cargarCategorias();
-    });
-
+    // Inicializar
     cargarCategorias();
 </script>

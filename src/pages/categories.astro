@@ -1,21 +1,25 @@
 ---
 import DashboardLayout from "@layouts/DashboardLayout.astro";
+import Category from "@components/category/Category.astro";
+import SearchCategory from "@components/category/SearchCategory.astro";
+import { Icon } from "astro-icon/components";
 const title = "Categorias - StockManager";
 const name = "Categorias";
-import Category from "@components/Category.astro";
-import { Icon } from "astro-icon/components";
 ---
 
 <DashboardLayout title={title} name={name}>
     <h2
         class="text-2xl flex gap-2 items-center justify-center font-bold text-center dark:text-white text-orange-500"
     >
-        <Icon name="form/category" size={20}/>
+        <Icon name="form/category" size={20} />
         Categorias
     </h2>
     <p class="text-center text-gray-500 dark:text-neutral-400">
         Aqui puedes gestionar tus categorias
     </p>
 
+    <div class="p-6">
+        <SearchCategory />
+    </div>
     <Category />
 </DashboardLayout>
