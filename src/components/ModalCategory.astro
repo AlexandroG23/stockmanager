@@ -1,0 +1,232 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<!-- Modal de Categoría -->
+<div
+    id="modal-categoria"
+    class="hidden fixed inset-0 items-center justify-center backdrop-blur-sm bg-black/30 z-50"
+>
+    <div
+        class="bg-white dark:bg-neutral-800 p-6 rounded-lg w-full max-w-md shadow-xl"
+    >
+        <div class="flex justify-between items-center mb-4">
+            <h2
+                class="text-xl font-semibold text-gray-800 dark:text-neutral-100"
+            >
+                Registrar Categoría
+            </h2>
+            <button
+                type="button"
+                id="btn-cerrar"
+                class="text-white rounded-lg cursor-pointer hover:scale-110"
+            >
+                <Icon name="nav/close" size={30} color="red" />
+            </button>
+        </div>
+
+        <form id="form-categoria" class="space-y-4">
+            <div>
+                <label
+                    for="categoria-nombre"
+                    class="block text-sm font-medium text-gray-700 dark:text-neutral-300 py-2"
+                >
+                    Nombre
+                </label>
+                <input
+                    type="text"
+                    id="categoria-nombre"
+                    class="mt-1 block w-full px-3 py-2 border dark:text-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    required
+                />
+            </div>
+            <div>
+                <label
+                    for="categoria-descripcion"
+                    class="block text-sm font-medium text-gray-700 dark:text-neutral-300 py-2"
+                >
+                    Descripción
+                </label>
+                <input
+                    type="text"
+                    id="categoria-descripcion"
+                    class="mt-1 block w-full px-3 py-2 border dark:text-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
+            </div>
+            <div class="flex justify-end gap-2">
+                <button
+                    type="button"
+                    id="btn-cancelar"
+                    class="px-4 py-2 bg-yellow-600 text-gray-700 dark:text-white rounded-lg hover:bg-yellow-400 dark:hover:bg-yellow-700"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                    Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de Confirmación -->
+<div
+    id="modal-confirmar"
+    class="hidden fixed inset-0 items-center justify-center backdrop-blur-sm bg-black/30 z-50"
+>
+    <div
+        class="bg-white dark:bg-neutral-800 p-6 rounded-lg w-full max-w-sm shadow-xl"
+    >
+        <h2
+            class="text-lg font-semibold text-gray-800 dark:text-neutral-100 mb-4"
+        >
+            ¿Eliminar categoría?
+        </h2>
+        <p class="text-sm text-gray-600 dark:text-neutral-300 mb-6">
+            Esta acción no se puede deshacer.
+        </p>
+        <div class="flex justify-end gap-2">
+            <button
+                type="button"
+                id="btn-no"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+            >
+                Cancelar
+            </button>
+            <button
+                type="button"
+                id="btn-si"
+                class="px-4 py-2 flex gap-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            >
+                <Icon name="form/trash" size={20}/>
+                Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Script -->
+<script is:inline>
+    const modal = document.getElementById("modal-categoria");
+    const modalConfirmar = document.getElementById("modal-confirmar");
+    const form = document.getElementById("form-categoria");
+    const inputNombre = document.getElementById("categoria-nombre");
+    const inputDescripcion = document.getElementById("categoria-descripcion");
+    const grid = document.getElementById("categorias-grid");
+
+    let categoriaIdEdit = null;
+    let categoriaIdDelete = null;
+
+    // Helpers
+    function abrirModal(m) {
+        m.classList.remove("hidden");
+        m.classList.add("flex");
+    }
+    function cerrarModal(m) {
+        m.classList.remove("flex");
+        m.classList.add("hidden");
+    }
+
+    async function cargarCategorias() {
+        const res = await fetch("http://127.0.0.1:8000/categorias/");
+        const categorias = await res.json();
+
+        grid.innerHTML = "";
+        categorias.forEach((cat) => {
+            const card = document.createElement("div");
+            card.className =
+                "flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-800 dark:border-neutral-700";
+            card.innerHTML = `
+        <div class="p-4 md:p-5 flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <p class="text-sm font-semibold text-gray-700 dark:text-neutral-200">${cat.nombre}</p>
+            <span class="text-xs text-gray-400">#${cat.id}</span>
+          </div>
+          <p class="text-xs text-gray-500 dark:text-neutral-400">${cat.descripcion || ""}</p>
+          <div class="flex gap-2 mt-3">
+            <button data-id="${cat.id}" data-nombre="${cat.nombre}" data-desc="${cat.descripcion || ""}" class="btn-editar px-3 py-1 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600">Editar</button>
+            <button data-id="${cat.id}" class="btn-eliminar px-3 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600">Eliminar</button>
+          </div>
+        </div>
+      `;
+            grid.appendChild(card);
+        });
+
+        document.querySelectorAll(".btn-editar").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                categoriaIdEdit = btn.dataset.id;
+                inputNombre.value = btn.dataset.nombre;
+                inputDescripcion.value = btn.dataset.desc;
+                abrirModal(modal);
+            });
+        });
+
+        document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                categoriaIdDelete = btn.dataset.id;
+                abrirModal(modalConfirmar);
+            });
+        });
+    }
+
+    // Botones modal categoría
+    document.getElementById("btn-nueva").addEventListener("click", () => {
+        categoriaIdEdit = null;
+        inputNombre.value = "";
+        inputDescripcion.value = "";
+        abrirModal(modal);
+    });
+
+    document
+        .getElementById("btn-cancelar")
+        .addEventListener("click", () => cerrarModal(modal));
+    document
+        .getElementById("btn-cerrar")
+        .addEventListener("click", () => cerrarModal(modal));
+
+    // Modal Confirmar
+    document
+        .getElementById("btn-no")
+        .addEventListener("click", () => cerrarModal(modalConfirmar));
+    document.getElementById("btn-si").addEventListener("click", async () => {
+        if (categoriaIdDelete) {
+            await fetch(
+                `http://127.0.0.1:8000/categorias/${categoriaIdDelete}`,
+                {
+                    method: "DELETE",
+                },
+            );
+            categoriaIdDelete = null;
+            await cargarCategorias();
+        }
+        cerrarModal(modalConfirmar);
+    });
+
+    // Guardar
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const nombre = inputNombre.value.trim();
+        const descripcion = inputDescripcion.value.trim();
+
+        if (categoriaIdEdit) {
+            await fetch(`http://127.0.0.1:8000/categorias/${categoriaIdEdit}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nombre, descripcion }),
+            });
+        } else {
+            await fetch("http://127.0.0.1:8000/categorias/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nombre, descripcion }),
+            });
+        }
+        cerrarModal(modal);
+        await cargarCategorias();
+    });
+
+    cargarCategorias();
+</script>
