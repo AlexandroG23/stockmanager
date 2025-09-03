@@ -5,66 +5,94 @@ import { Icon } from "astro-icon/components";
 <!-- Modal de Categoría -->
 <div
     id="modal-categoria"
-    class="hidden fixed inset-0 items-center justify-center backdrop-blur-sm bg-black/30 z-50"
+    class="hidden fixed inset-0 items-center justify-center backdrop-blur-sm bg-black/50 z-50"
 >
     <div
-        class="bg-white dark:bg-neutral-800 p-6 rounded-lg w-full max-w-md shadow-xl"
+        class="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl w-full max-w-md p-6 relative"
     >
-        <div class="flex justify-between items-center mb-4">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
             <h2
-                class="text-xl font-semibold text-gray-800 dark:text-neutral-100"
+                class="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2"
             >
+                <Icon
+                    name="form/tag"
+                    size={22}
+                    class="text-blue-600 dark:text-blue-400"
+                />
                 Registrar Categoría
             </h2>
             <button
                 type="button"
                 id="btn-cerrar"
-                class="text-white rounded-lg cursor-pointer hover:scale-110"
+                class="p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900 transition"
             >
-                <Icon name="nav/close" size={30} color="red" />
+                <Icon name="nav/close" size={26} class="text-red-500" />
             </button>
         </div>
 
-        <form id="form-categoria" class="space-y-4">
-            <div>
-                <label
-                    for="categoria-nombre"
-                    class="block text-sm font-medium text-gray-700 dark:text-neutral-300 py-2"
-                >
-                    Nombre
-                </label>
+        <!-- Formulario -->
+        <form id="form-categoria" class="space-y-8">
+            <!-- Nombre -->
+            <div class="relative">
                 <input
                     type="text"
                     id="categoria-nombre"
-                    class="mt-1 block w-full px-3 py-2 border dark:text-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     required
+                    placeholder=" "
+                    class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white
+                           dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-            </div>
-            <div>
                 <label
-                    for="categoria-descripcion"
-                    class="block text-sm font-medium text-gray-700 dark:text-neutral-300 py-2"
+                    for="categoria-nombre"
+                    class="absolute left-3 -top-2.5 text-xs text-gray-500 dark:text-gray-400
+                           bg-white dark:bg-neutral-900 px-1 transition-all
+                           peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400
+                           peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-500"
                 >
-                    Descripción
+                    Nombre
                 </label>
+            </div>
+
+            <!-- Descripción -->
+            <div class="relative">
                 <input
                     type="text"
                     id="categoria-descripcion"
-                    class="mt-1 block w-full px-3 py-2 border dark:text-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    placeholder=" "
+                    class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white
+                           dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                <label
+                    for="categoria-descripcion"
+                    class="absolute left-3 -top-2.5 text-xs text-gray-500 dark:text-gray-400
+                           bg-white dark:bg-neutral-900 px-1 transition-all
+                           peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400
+                           peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-500"
+                >
+                    Descripción
+                </label>
             </div>
-            <div class="flex justify-end gap-2">
+
+            <!-- Botones -->
+            <div class="flex justify-end gap-2 mt-4">
                 <button
                     type="button"
                     id="btn-cancelar"
-                    class="px-4 py-2 bg-yellow-600 text-gray-700 dark:text-white rounded-lg hover:bg-yellow-400 dark:hover:bg-yellow-700"
+                    class="px-4 py-2 flex gap-2 items-center bg-black text-white rounded-lg hover:bg-gray-700"
                 >
+                    <Icon
+                        name="nav/close"
+                        size={20}
+                        class="text-red-600 dark:text-red-400"
+                    />
                     Cancelar
                 </button>
                 <button
                     type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    class="px-4 py-2 flex gap-2 items-center bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
+                    <Icon name="form/save" size={20} />
                     Guardar
                 </button>
             </div>

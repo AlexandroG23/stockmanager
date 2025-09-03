@@ -2,121 +2,212 @@
 import { Icon } from "astro-icon/components";
 ---
 
+<!-- Modal de formulario de producto (floating labels + blur) -->
 <div
     id="modal-producto"
-    class="hidden fixed inset-0 items-center justify-center bg-black/40 backdrop-blur-sm z-50"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50"
 >
     <div
-        class="bg-white dark:bg-neutral-900 p-6 rounded-2xl shadow-xl w-full max-w-lg relative"
+        class="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl w-full max-w-md p-6 relative"
     >
-        <button
-            id="cerrar-modal"
-            class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white rounded-lg cursor-pointer hover:scale-110"
+        <!-- Título -->
+        <h2
+            id="titulo-modal-producto"
+            class="text-lg font-semibold mb-6 dark:text-white flex items-center gap-2 pb-4"
         >
-            <Icon name="nav/close" size={30} color="white" />
-        </button>
-        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">
-            Producto
+            <Icon name="form/plusproduct" size={22} class="text-blue-600 dark:text-blue-400" />
+            Registrar producto
         </h2>
-        <form id="form-producto" class="space-y-4">
+
+        <form id="form-producto" class="space-y-9">
             <input type="hidden" id="producto-id" />
 
-            <div>
-                <label class="block text-sm font-medium">Código de barras</label
-                >
+            <!-- Código de barras -->
+            <div class="relative">
                 <input
-                    type="text"
                     id="producto-codigo"
-                    class="w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
-                />
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium">Nombre</label>
-                <input
                     type="text"
-                    id="producto-nombre"
-                    required
-                    class="w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
+                    placeholder=" "
+                    class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white 
+                           dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium"
-                        >Precio compra</label
-                    >
-                    <input
-                        type="number"
-                        step="0.01"
-                        id="producto-precio-compra"
-                        required
-                        class="w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
-                    />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium">Precio venta</label
-                    >
-                    <input
-                        type="number"
-                        step="0.01"
-                        id="producto-precio-venta"
-                        required
-                        class="w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
-                    />
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium">Stock actual</label
-                    >
-                    <input
-                        type="number"
-                        id="producto-stock-actual"
-                        required
-                        class="w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
-                    />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium">Stock mínimo</label
-                    >
-                    <input
-                        type="number"
-                        id="producto-stock-minimo"
-                        required
-                        class="w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
-                    />
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium">Unidad de medida</label
+                <label
+                    for="producto-codigo"
+                    class="absolute left-3 -top-2.5 text-xs text-gray-500 dark:text-gray-400 
+                           bg-white dark:bg-neutral-900 px-1 transition-all
+                           peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400
+                           peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-500"
                 >
-                <input
-                    type="text"
-                    id="producto-unidad"
-                    required
-                    class="w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
-                />
+                    Código de barras
+                </label>
             </div>
 
-            <div>
-                <label class="block text-sm font-medium">Categoría</label>
+            <!-- Nombre -->
+            <div class="relative">
+                <input
+                    id="producto-nombre"
+                    type="text"
+                    required
+                    placeholder=" "
+                    class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white 
+                           dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <label
+                    for="producto-nombre"
+                    class="absolute left-3 -top-2.5 text-xs text-gray-500 dark:text-gray-400 
+                           bg-white dark:bg-neutral-900 px-1 transition-all
+                           peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400
+                           peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-500"
+                >
+                    Nombre
+                </label>
+            </div>
+
+            <!-- Precios -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="relative">
+                    <input
+                        id="producto-precio-compra"
+                        type="number"
+                        step="0.01"
+                        required
+                        placeholder=" "
+                        class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white 
+                               dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <label
+                        for="producto-precio-compra"
+                        class="absolute left-3 -top-2.5 text-xs text-gray-500 dark:text-gray-400 
+                               bg-white dark:bg-neutral-900 px-1 transition-all
+                               peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400
+                               peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-500"
+                    >
+                        Precio compra
+                    </label>
+                </div>
+
+                <div class="relative">
+                    <input
+                        id="producto-precio-venta"
+                        type="number"
+                        step="0.01"
+                        required
+                        placeholder=" "
+                        class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white 
+                               dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <label
+                        for="producto-precio-venta"
+                        class="absolute left-3 -top-2.5 text-xs text-gray-500 dark:text-gray-400 
+                               bg-white dark:bg-neutral-900 px-1 transition-all
+                               peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400
+                               peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-500"
+                    >
+                        Precio venta
+                    </label>
+                </div>
+            </div>
+
+            <!-- Stocks -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="relative">
+                    <input
+                        id="producto-stock-actual"
+                        type="number"
+                        required
+                        placeholder=" "
+                        class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white 
+                               dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <label
+                        for="producto-stock-actual"
+                        class="absolute left-3 -top-2.5 text-xs text-gray-500 dark:text-gray-400 
+                               bg-white dark:bg-neutral-900 px-1 transition-all
+                               peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400
+                               peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-500"
+                    >
+                        Stock actual
+                    </label>
+                </div>
+
+                <div class="relative">
+                    <input
+                        id="producto-stock-minimo"
+                        type="number"
+                        required
+                        placeholder=" "
+                        class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white 
+                               dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <label
+                        for="producto-stock-minimo"
+                        class="absolute left-3 -top-2.5 text-xs text-gray-500 dark:text-gray-400 
+                               bg-white dark:bg-neutral-900 px-1 transition-all
+                               peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400
+                               peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-500"
+                    >
+                        Stock mínimo
+                    </label>
+                </div>
+            </div>
+
+            <!-- Unidad -->
+            <div class="relative">
+                <input
+                    id="producto-unidad"
+                    type="text"
+                    required
+                    placeholder=" "
+                    class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white 
+                           dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <label
+                    for="producto-unidad"
+                    class="absolute left-3 -top-2.5 text-xs text-gray-500 dark:text-gray-400 
+                           bg-white dark:bg-neutral-900 px-1 transition-all
+                           peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400
+                           peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-500"
+                >
+                    Unidad de medida
+                </label>
+            </div>
+
+            <!-- Categoría -->
+            <div class="relative">
                 <select
                     id="producto-categoria"
                     required
-                    class="w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
+                    class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white 
+                           dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                    <option value="">Seleccione una categoría</option>
+                    <option value="" disabled selected hidden></option>
                 </select>
+                <label
+                    for="producto-categoria"
+                    class="absolute left-3 -top-2.5 text-xs text-gray-500 dark:text-gray-400 
+                           bg-white dark:bg-neutral-900 px-1 transition-all
+                           peer-placeholder-shown:top-2 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400
+                           peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-500"
+                >
+                    Categoría
+                </label>
             </div>
 
-            <div class="flex justify-end">
+            <!-- Botones -->
+            <div class="flex justify-end gap-2 mt-4">
+                <button
+                    type="button"
+                    id="cerrar-modal"
+                    class="px-4 py-2 flex gap-2 items-center bg-black dark:bg-gray-700 text-gray-300 dark:text-gray-400 hover:bg-gray-600 dark:hover:bg-gray-600 rounded-lg"
+                >
+                    <Icon name="nav/close" size={20} class="text-red-600 dark:text-red-400"/>
+                    Cancelar
+                </button>
                 <button
                     type="submit"
-                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    class="px-4 py-2 flex gap-2 items-center bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
+                    <Icon name="form/save" size={20} />
                     Guardar
                 </button>
             </div>

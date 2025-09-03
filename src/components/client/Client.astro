@@ -1,0 +1,262 @@
+---
+import { Icon } from "astro-icon/components";
+import ModalClient from "./ModalClient.astro";
+---
+
+<div class="w-full max-w-7xl mx-auto p-6">
+  <!-- Encabezado -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Clientes</h1>
+    <button
+      id="btn-nuevo-cliente"
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 flex items-center gap-2"
+    >
+      <Icon name="form/plususer" size={18} /> Nuevo cliente
+    </button>
+  </div>
+
+  <!-- Buscador con ícono -->
+  <div class="mb-4 relative">
+    <Icon
+      name="form/searchclient"
+      size={18}
+      class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-green-400"
+    />
+    <input
+      id="buscar-cliente"
+      type="text"
+      placeholder="Buscar por nombre, documento, email o teléfono..."
+      class="w-full pl-10 p-2 border rounded-lg dark:bg-neutral-800 dark:text-white dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+  </div>
+
+  <!-- Tabla en desktop / tarjetas en móvil -->
+  <div class="overflow-x-auto bg-white dark:bg-neutral-900 shadow rounded-lg">
+    <table
+      class="w-full text-sm text-left text-gray-600 dark:text-gray-300 hidden lg:table"
+    >
+      <thead
+        class="bg-gray-100 dark:bg-neutral-800 text-gray-700 dark:text-gray-200 text-xs uppercase"
+      >
+        <tr>
+          <th class="px-4 py-3">ID</th>
+          <th class="px-4 py-3">Nombre</th>
+          <th class="px-4 py-3">Documento</th>
+          <th class="px-4 py-3">Teléfono</th>
+          <th class="px-4 py-3">Email</th>
+          <th class="px-4 py-3">Dirección</th>
+          <th class="px-4 py-3 text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody
+        id="clientes-lista"
+        class="divide-y divide-gray-200 dark:divide-neutral-700"
+      >
+        <!-- JS insertará filas -->
+      </tbody>
+    </table>
+
+    <!-- Vista móvil -->
+    <div id="clientes-lista-movil" class="lg:hidden flex flex-col gap-4 p-4">
+      <!-- JS insertará tarjetas -->
+    </div>
+  </div>
+</div>
+
+<ModalClient/>
+
+<script is:inline>
+  // Elements
+  const lista = document.getElementById("clientes-lista");
+  const listaMovil = document.getElementById("clientes-lista-movil");
+
+  const modal = document.getElementById("modal-cliente");
+  const tituloModal = document.getElementById("titulo-modal-cliente");
+  const btnNuevo = document.getElementById("btn-nuevo-cliente");
+  const btnCerrar = document.getElementById("cerrar-modal-cliente");
+  const form = document.getElementById("form-cliente");
+
+  const modalEliminar = document.getElementById("modal-eliminar-cliente");
+  const btnCancelarEliminar = document.getElementById(
+    "cancelar-eliminar-cliente",
+  );
+  const btnConfirmarEliminar = document.getElementById(
+    "confirmar-eliminar-cliente",
+  );
+  let clienteAEliminar = null;
+
+  const idInput = document.getElementById("cliente-id");
+  const nombreInput = document.getElementById("cliente-nombre");
+  const documentoInput = document.getElementById("cliente-documento");
+  const telefonoInput = document.getElementById("cliente-telefono");
+  const emailInput = document.getElementById("cliente-email");
+  const direccionInput = document.getElementById("cliente-direccion");
+
+  const buscador = document.getElementById("buscar-cliente");
+
+  // State
+  let clientes = [];
+  let clientesFiltrados = [];
+
+  // Helpers de modal (evita conflicto hidden + flex)
+  function abrirModal(m) {
+    m.classList.remove("hidden");
+    m.classList.add("flex");
+  }
+  function cerrarModal(m) {
+    m.classList.remove("flex");
+    m.classList.add("hidden");
+  }
+
+  // Fetch
+  async function cargarClientes() {
+    const res = await fetch("http://127.0.0.1:8000/clientes/");
+    clientes = await res.json();
+    clientesFiltrados = clientes;
+    mostrarClientes(clientesFiltrados);
+  }
+
+  // Render
+  function mostrarClientes(data) {
+    lista.innerHTML = "";
+    listaMovil.innerHTML = "";
+
+    data.forEach((c) => {
+      // --- Tabla desktop ---
+      const row = document.createElement("tr");
+      row.className = "hover:bg-gray-50 dark:hover:bg-neutral-800";
+      row.innerHTML = `
+        <td class="px-4 py-3">${c.id}</td>
+        <td class="px-4 py-3 font-semibold">${c.nombre}</td>
+        <td class="px-4 py-3">${c.documento}</td>
+        <td class="px-4 py-3">${c.telefono || "-"}</td>
+        <td class="px-4 py-3">${c.email || "-"}</td>
+        <td class="px-4 py-3">${c.direccion || "-"}</td>
+        <td class="px-4 py-3 text-center">
+          <button data-id="${c.id}" class="btn-editar px-2 py-1 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600">Editar</button>
+          <button data-id="${c.id}" class="btn-eliminar px-2 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600">Eliminar</button>
+        </td>
+      `;
+      lista.appendChild(row);
+
+      // --- Tarjeta móvil ---
+      const card = document.createElement("div");
+      card.className =
+        "p-4 border rounded-lg shadow-sm bg-white dark:bg-neutral-800 dark:border-neutral-700";
+      card.innerHTML = `
+        <div class="flex justify-between items-center mb-2">
+          <h3 class="font-semibold text-gray-800 dark:text-white">${c.nombre}</h3>
+          <span class="text-xs text-gray-500">#${c.id}</span>
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-300">Doc: ${c.documento}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-300">Tel: ${c.telefono || "-"}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-300">Email: ${c.email || "-"}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-300">Dir: ${c.direccion || "-"}</p>
+        <div class="mt-3 flex gap-2">
+          <button data-id="${c.id}" class="btn-editar px-3 py-1 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600">Editar</button>
+          <button data-id="${c.id}" class="btn-eliminar px-3 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600">Eliminar</button>
+        </div>
+      `;
+      listaMovil.appendChild(card);
+    });
+
+    // Bind eventos de acciones
+    document.querySelectorAll(".btn-editar").forEach((btn) => {
+      btn.addEventListener("click", (e) => editarCliente(e.target.dataset.id));
+    });
+    document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        clienteAEliminar = e.target.dataset.id;
+        abrirModal(modalEliminar);
+      });
+    });
+  }
+
+  // Actions
+  function editarCliente(id) {
+    const c = clientes.find((x) => x.id == id);
+    if (!c) return;
+    idInput.value = c.id;
+    nombreInput.value = c.nombre;
+    documentoInput.value = c.documento;
+    telefonoInput.value = c.telefono || "";
+    emailInput.value = c.email || "";
+    direccionInput.value = c.direccion || "";
+    tituloModal.textContent = "Editar cliente";
+    abrirModal(modal);
+  }
+
+  btnNuevo.addEventListener("click", () => {
+    form.reset();
+    idInput.value = "";
+    tituloModal.textContent = "Registrar cliente";
+    abrirModal(modal);
+  });
+
+  btnCerrar.addEventListener("click", () => cerrarModal(modal));
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+      nombre: nombreInput.value.trim(),
+      documento: documentoInput.value.trim(),
+      telefono: telefonoInput.value.trim() || null,
+      email: emailInput.value.trim() || null,
+      direccion: direccionInput.value.trim() || null,
+    };
+
+    if (!data.nombre || !data.documento) return;
+
+    if (idInput.value) {
+      // Update
+      await fetch(`http://127.0.0.1:8000/clientes/${idInput.value}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+    } else {
+      // Create
+      await fetch("http://127.0.0.1:8000/clientes/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+    }
+
+    cerrarModal(modal);
+    await cargarClientes();
+  });
+
+  btnCancelarEliminar.addEventListener("click", () => {
+    clienteAEliminar = null;
+    cerrarModal(modalEliminar);
+  });
+
+  btnConfirmarEliminar.addEventListener("click", async () => {
+    if (clienteAEliminar) {
+      await fetch(`http://127.0.0.1:8000/clientes/${clienteAEliminar}`, {
+        method: "DELETE",
+      });
+      clienteAEliminar = null;
+      cerrarModal(modalEliminar);
+      await cargarClientes();
+    }
+  });
+
+  // Buscador
+  buscador.addEventListener("input", (e) => {
+    const q = e.target.value.toLowerCase();
+    clientesFiltrados = clientes.filter(
+      (c) =>
+        (c.nombre && c.nombre.toLowerCase().includes(q)) ||
+        (c.documento && c.documento.toLowerCase().includes(q)) ||
+        (c.email && c.email.toLowerCase().includes(q)) ||
+        (c.telefono && c.telefono.toLowerCase().includes(q)),
+    );
+    mostrarClientes(clientesFiltrados);
+  });
+
+  // Init
+  cargarClientes();
+</script>
