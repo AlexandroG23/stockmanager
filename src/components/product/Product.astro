@@ -12,13 +12,14 @@ import ModalConfirm from "./ModalConfirm.astro";
         <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
             Productos
         </h1>
-        <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+        <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto relative">
             <!-- 🔍 Buscador -->
+            <Icon name="form/carrot" size={18} class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-orange-400" />
             <input
                 type="text"
                 id="buscador-productos"
-                placeholder="Buscar productos..."
-                class="flex-1 sm:w-64 p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
+                placeholder="Buscar productos"
+                class="flex-1 pl-10 sm:w-64 p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
             />
             <button
                 id="btn-nuevo"

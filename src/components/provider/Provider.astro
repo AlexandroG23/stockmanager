@@ -1,0 +1,241 @@
+---
+import { Icon } from "astro-icon/components";
+import ModalProvider from "@components/provider/ModalProvider.astro";
+---
+
+<div class="w-full max-w-7xl mx-auto p-6">
+    <!-- Encabezado -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
+            Proveedores
+        </h1>
+        <button
+            id="btn-nuevo-proveedor"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 flex items-center gap-2"
+        >
+            <Icon name="form/proveedor" size={18} /> Nuevo proveedor
+        </button>
+    </div>
+
+    <!-- Buscador -->
+    <div class="mb-4 relative">
+        <Icon name="form/shop" size={18} class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-yellow-400" />
+        <input
+            id="buscar-proveedor"
+            type="text"
+            placeholder="Buscar proveedor por nombre o RUC..."
+            class="w-full pl-10 p-2 border rounded-lg dark:bg-neutral-800 dark:text-white dark:border-neutral-700"
+        />
+    </div>
+
+    <!-- Tabla en desktop / tarjetas en móvil -->
+    <div class="overflow-x-auto bg-white dark:bg-neutral-900 shadow rounded-lg">
+        <table
+            class="w-full text-sm text-left text-gray-600 dark:text-gray-300 hidden lg:table"
+        >
+            <thead
+                class="bg-gray-100 dark:bg-neutral-800 text-gray-700 dark:text-gray-200 text-xs uppercase"
+            >
+                <tr>
+                    <th class="px-4 py-3">ID</th>
+                    <th class="px-4 py-3">Nombre</th>
+                    <th class="px-4 py-3">RUC</th>
+                    <th class="px-4 py-3">Teléfono</th>
+                    <th class="px-4 py-3">Email</th>
+                    <th class="px-4 py-3">Dirección</th>
+                    <th class="px-4 py-3 text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody
+                id="proveedores-lista"
+                class="divide-y divide-gray-200 dark:divide-neutral-700"
+            >
+                <!-- JS insertará filas -->
+            </tbody>
+        </table>
+
+        <!-- Vista móvil -->
+        <div
+            id="proveedores-lista-movil"
+            class="lg:hidden flex flex-col gap-4 p-4"
+        >
+            <!-- JS insertará tarjetas -->
+        </div>
+    </div>
+</div>
+
+<ModalProvider />
+
+<script is:inline>
+    const lista = document.getElementById("proveedores-lista");
+    const listaMovil = document.getElementById("proveedores-lista-movil");
+    const modal = document.getElementById("modal-proveedor");
+    const btnNuevo = document.getElementById("btn-nuevo-proveedor");
+    const btnCerrar = document.getElementById("cerrar-modal-proveedor");
+    const form = document.getElementById("form-proveedor");
+
+    const modalEliminar = document.getElementById("modal-eliminar-proveedor");
+    const btnCancelarEliminar = document.getElementById("cancelar-eliminar-proveedor");
+    const btnConfirmarEliminar = document.getElementById("confirmar-eliminar-proveedor");
+    let proveedorAEliminar = null;
+
+    const idInput = document.getElementById("proveedor-id");
+    const nombreInput = document.getElementById("proveedor-nombre");
+    const rucInput = document.getElementById("proveedor-ruc");
+    const telefonoInput = document.getElementById("proveedor-telefono");
+    const emailInput = document.getElementById("proveedor-email");
+    const direccionInput = document.getElementById("proveedor-direccion");
+    const buscador = document.getElementById("buscar-proveedor");
+
+    let proveedores = [];
+
+    async function cargarProveedores() {
+        const res = await fetch("http://127.0.0.1:8000/proveedores/");
+        proveedores = await res.json();
+        mostrarProveedores(proveedores);
+    }
+
+    function mostrarProveedores(data) {
+        lista.innerHTML = "";
+        listaMovil.innerHTML = "";
+
+        data.forEach((p) => {
+            // --- Vista Desktop ---
+            const row = document.createElement("tr");
+            row.className = "hover:bg-gray-50 dark:hover:bg-neutral-800";
+            row.innerHTML = `
+                <td class="px-4 py-3">${p.id}</td>
+                <td class="px-4 py-3 font-semibold">${p.nombre}</td>
+                <td class="px-4 py-3">${p.ruc}</td>
+                <td class="px-4 py-3">${p.telefono || "-"}</td>
+                <td class="px-4 py-3">${p.email || "-"}</td>
+                <td class="px-4 py-3">${p.direccion || "-"}</td>
+                <td class="px-4 py-3 text-center">
+                    <button data-id="${p.id}" class="btn-editar px-2 py-1 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600">Editar</button>
+                    <button data-id="${p.id}" class="btn-eliminar px-2 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600">Eliminar</button>
+                </td>
+            `;
+            lista.appendChild(row);
+
+            // --- Vista Móvil ---
+            const card = document.createElement("div");
+            card.className =
+                "p-4 border rounded-lg shadow-sm bg-white dark:bg-neutral-800 dark:border-neutral-700";
+            card.innerHTML = `
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-semibold text-gray-800 dark:text-white">${p.nombre}</h3>
+                    <span class="text-xs text-gray-500">#${p.id}</span>
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-300">RUC: ${p.ruc}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">Tel: ${p.telefono || "-"}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">Email: ${p.email || "-"}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">Dir: ${p.direccion || "-"}</p>
+                <div class="mt-3 flex gap-2">
+                    <button data-id="${p.id}" class="btn-editar px-3 py-1 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600">Editar</button>
+                    <button data-id="${p.id}" class="btn-eliminar px-3 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600">Eliminar</button>
+                </div>
+            `;
+            listaMovil.appendChild(card);
+        });
+
+        // Eventos
+        document.querySelectorAll(".btn-editar").forEach((btn) => {
+            btn.addEventListener("click", (e) =>
+                editarProveedor(e.target.dataset.id)
+            );
+        });
+        document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                proveedorAEliminar = e.target.dataset.id;
+                abrirModal(modalEliminar);
+            });
+        });
+    }
+
+    function abrirModal(modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+    }
+
+    function cerrarModal(modal) {
+        modal.classList.remove("flex");
+        modal.classList.add("hidden");
+    }
+
+    function editarProveedor(id) {
+        const p = proveedores.find((x) => x.id == id);
+        if (!p) return;
+        idInput.value = p.id;
+        nombreInput.value = p.nombre;
+        rucInput.value = p.ruc;
+        telefonoInput.value = p.telefono || "";
+        emailInput.value = p.email || "";
+        direccionInput.value = p.direccion || "";
+        abrirModal(modal);
+    }
+
+    btnNuevo.addEventListener("click", () => {
+        form.reset();
+        idInput.value = "";
+        abrirModal(modal);
+    });
+
+    btnCerrar.addEventListener("click", () => cerrarModal(modal));
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const data = {
+            nombre: nombreInput.value,
+            ruc: rucInput.value,
+            telefono: telefonoInput.value,
+            email: emailInput.value,
+            direccion: direccionInput.value,
+        };
+
+        if (idInput.value) {
+            await fetch(`http://127.0.0.1:8000/proveedores/${idInput.value}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+        } else {
+            await fetch("http://127.0.0.1:8000/proveedores/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+        }
+
+        cerrarModal(modal);
+        cargarProveedores();
+    });
+
+    btnCancelarEliminar.addEventListener("click", () => {
+        proveedorAEliminar = null;
+        cerrarModal(modalEliminar);
+    });
+
+    btnConfirmarEliminar.addEventListener("click", async () => {
+        if (proveedorAEliminar) {
+            await fetch(
+                `http://127.0.0.1:8000/proveedores/${proveedorAEliminar}`,
+                { method: "DELETE" }
+            );
+            proveedorAEliminar = null;
+            cerrarModal(modalEliminar);
+            cargarProveedores();
+        }
+    });
+
+    buscador.addEventListener("input", (e) => {
+        const valor = e.target.value.toLowerCase();
+        const filtrados = proveedores.filter(
+            (p) =>
+                p.nombre.toLowerCase().includes(valor) ||
+                p.ruc.toLowerCase().includes(valor)
+        );
+        mostrarProveedores(filtrados);
+    });
+
+    cargarProveedores();
+</script>
