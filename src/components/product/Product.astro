@@ -6,16 +6,27 @@ import ModalConfirm from "./ModalConfirm.astro";
 
 <div class="w-full max-w-7xl mx-auto p-6">
     <!-- Encabezado -->
-    <div class="flex justify-between items-center mb-6">
+    <div
+        class="flex flex-col lg:flex-row justify-between lg:items-center gap-4 mb-6"
+    >
         <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
             Productos
         </h1>
-        <button
-            id="btn-nuevo"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 flex items-center gap-2"
-        >
-            <Icon name="form/plusproduct" size={18} /> Nuevo producto
-        </button>
+        <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+            <!-- 🔍 Buscador -->
+            <input
+                type="text"
+                id="buscador-productos"
+                placeholder="Buscar productos..."
+                class="flex-1 sm:w-64 p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
+            />
+            <button
+                id="btn-nuevo"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 flex items-center gap-2"
+            >
+                <Icon name="form/plusproduct" size={18} /> Nuevo producto
+            </button>
+        </div>
     </div>
 
     <!-- Tabla en desktop / tarjetas en móvil -->
@@ -85,12 +96,16 @@ import ModalConfirm from "./ModalConfirm.astro";
     const unidadInput = document.getElementById("producto-unidad");
     const categoriaSelect = document.getElementById("producto-categoria");
 
+    const buscador = document.getElementById("buscador-productos");
+
     let productos = [];
     let categorias = [];
+    let productosFiltrados = [];
 
     async function cargarProductos() {
         const res = await fetch("http://127.0.0.1:8000/productos/");
         productos = await res.json();
+        productosFiltrados = productos;
         mostrarProductos();
     }
 
@@ -111,7 +126,7 @@ import ModalConfirm from "./ModalConfirm.astro";
         lista.innerHTML = "";
         listaMovil.innerHTML = "";
 
-        productos.forEach((p) => {
+        productosFiltrados.forEach((p) => {
             // --- Vista Desktop (tabla) ---
             const row = document.createElement("tr");
             row.className = "hover:bg-gray-50 dark:hover:bg-neutral-800";
@@ -248,6 +263,20 @@ import ModalConfirm from "./ModalConfirm.astro";
             cerrarModal(modalEliminar);
             cargarProductos();
         }
+    });
+
+    // 🔍 Buscador
+    buscador.addEventListener("input", (e) => {
+        const term = e.target.value.toLowerCase();
+        productosFiltrados = productos.filter(
+            (p) =>
+                p.nombre.toLowerCase().includes(term) ||
+                (p.codigo_barras &&
+                    p.codigo_barras.toLowerCase().includes(term)) ||
+                (p.categoria?.nombre &&
+                    p.categoria.nombre.toLowerCase().includes(term)),
+        );
+        mostrarProductos();
     });
 
     cargarCategorias();
