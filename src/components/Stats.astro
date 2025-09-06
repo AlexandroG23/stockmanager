@@ -1,151 +1,220 @@
 ---
-import { Icon } from "astro-icon/components";
+
 ---
 
 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-    <!-- Card -->
+    <!-- Card: Productos totales -->
     <div
         class="flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-800 dark:border-neutral-700"
     >
-        <div class="p-4 md:p-5">
-            <div class="flex items-center gap-x-2">
-                <p
-                    class="text-xs uppercase text-gray-500 dark:text-neutral-500"
-                >
-                    Productos totales
-                </p>
-                <Icon name="form/total" />
-            </div>
-
-            <div class="mt-1 flex items-center gap-x-2">
-                <h3
-                    class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
-                >
-                    221
-                </h3>
-            </div>
+        <div class="p-4 md:p-5 flex flex-col items-center">
+            <p class="text-xs uppercase text-gray-500 dark:text-neutral-500">
+                Productos totales
+            </p>
+            <h3
+                id="total-productos"
+                class="text-xl text-center sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
+            >
+                0
+            </h3>
         </div>
     </div>
-    <!-- End Card -->
 
-    <!-- Card -->
+    <!-- Card: Stock bajo -->
     <div
         class="flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-800 dark:border-neutral-700"
     >
-        <div class="p-4 md:p-5">
-            <div class="flex items-center gap-x-2">
-                <p
-                    class="text-xs uppercase text-gray-500 dark:text-neutral-500"
-                >
-                    Productos con stock bajo
-                </p>
-            </div>
-
-            <div class="mt-1 flex items-center gap-x-2">
-                <h3
-                    class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
-                >
-                    29.4%
-                </h3>
-            </div>
+        <div class="p-4 md:p-5 flex flex-col items-center">
+            <p class="text-xs uppercase text-gray-500 dark:text-neutral-500">
+                Productos con stock bajo
+            </p>
+            <h3
+                id="stock-bajo"
+                class="text-xl text-center sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
+            >
+                0
+            </h3>
         </div>
     </div>
-    <!-- End Card -->
 
-    <!-- Card -->
+    <!-- Card: Proveedores -->
     <div
         class="flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-800 dark:border-neutral-700"
     >
-        <div class="p-4 md:p-5">
-            <div class="flex items-center gap-x-2">
-                <p
-                    class="text-xs uppercase text-gray-500 dark:text-neutral-500"
-                >
-                    Proveedores
-                </p>
-            </div>
-
-            <div class="mt-1 flex items-center gap-x-2">
-                <h3
-                    class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
-                >
-                    56.8%
-                </h3>
-            </div>
+        <div class="p-4 md:p-5 flex flex-col items-center">
+            <p class="text-xs uppercase text-gray-500 dark:text-neutral-500">
+                Proveedores
+            </p>
+            <h3
+                id="total-proveedores"
+                class="text-xl text-center sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
+            >
+                0
+            </h3>
         </div>
     </div>
-    <!-- End Card -->
 
-    <!-- Card -->
+    <!-- Card: Clientes -->
     <div
         class="flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-800 dark:border-neutral-700"
     >
-        <div class="p-4 md:p-5">
-            <div class="flex items-center gap-x-2">
-                <p
-                    class="text-xs uppercase text-gray-500 dark:text-neutral-500"
-                >
-                    Clientes
-                </p>
-            </div>
-
-            <div class="mt-1 flex items-center gap-x-2">
-                <h3
-                    class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
-                >
-                    92,913
-                </h3>
-            </div>
+        <div class="p-4 md:p-5 flex flex-col items-center">
+            <p class="text-xs uppercase text-gray-500 dark:text-neutral-500">
+                Clientes
+            </p>
+            <h3
+                id="total-clientes"
+                class="text-xl text-center sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
+            >
+                0
+            </h3>
         </div>
     </div>
-    <!-- End Card -->
 
-    <!-- Card -->
+    <!-- Card: Ventas totales -->
     <div
         class="flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-800 dark:border-neutral-700"
     >
-        <div class="p-4 md:p-5">
-            <div class="flex items-center gap-x-2">
-                <p
-                    class="text-xs uppercase text-gray-500 dark:text-neutral-500"
-                >
-                    Ventas totales
-                </p>
-            </div>
-
-            <div class="mt-1 flex items-center gap-x-2">
-                <h3
-                    class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
-                >
-                    92,913
-                </h3>
-            </div>
+        <div class="p-4 md:p-5 flex flex-col items-center">
+            <p class="text-xs uppercase text-gray-500 dark:text-neutral-500">
+                Ventas totales
+            </p>
+            <h3
+                id="total-ventas"
+                class="text-xl text-center sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
+            >
+                0
+            </h3>
         </div>
     </div>
-    <!-- End Card -->
 
-    <!-- Card -->
+    <!-- Card: Compras totales -->
     <div
         class="flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl dark:bg-neutral-800 dark:border-neutral-700"
     >
-        <div class="p-4 md:p-5">
-            <div class="flex items-center gap-x-2">
-                <p
-                    class="text-xs uppercase text-gray-500 dark:text-neutral-500"
-                >
-                    Compras totales
-                </p>
-            </div>
-
-            <div class="mt-1 flex items-center gap-x-2">
-                <h3
-                    class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
-                >
-                    92,913
-                </h3>
-            </div>
+        <div class="p-4 md:p-5 flex flex-col items-center">
+            <p class="text-xs uppercase text-gray-500 dark:text-neutral-500">
+                Compras totales
+            </p>
+            <h3
+                id="total-compras"
+                class="text-xl text-center sm:text-2xl font-medium text-gray-800 dark:text-neutral-200"
+            >
+                0
+            </h3>
         </div>
     </div>
-    <!-- End Card -->
 </div>
-<!-- End Grid -->
+
+<!-- Gráficos -->
+<div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+    <div
+        class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 shadow rounded-xl p-4"
+    >
+        <h2 class="text-gray-800 dark:text-white font-semibold mb-4">
+            Productos vs Stock
+        </h2>
+        <canvas id="productos-stock-chart" class="w-full h-64"></canvas>
+    </div>
+    <div
+        class="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 shadow rounded-xl p-4"
+    >
+        <h2 class="text-gray-800 dark:text-white font-semibold mb-4">
+            Ventas y Compras
+        </h2>
+        <canvas id="ventas-compras-chart" class="w-full h-64"></canvas>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script is:inline>
+    async function cargarDashboard() {
+        // --- Cards ---
+        const resProductos = await fetch("http://127.0.0.1:8000/productos/");
+        const productos = await resProductos.json();
+        document.getElementById("total-productos").textContent =
+            productos.length;
+        const stockBajo = productos.filter(
+            (p) => p.stock_actual < p.stock_minimo,
+        ).length;
+        document.getElementById("stock-bajo").textContent = stockBajo;
+
+        const resProveedores = await fetch(
+            "http://127.0.0.1:8000/proveedores/",
+        );
+        const proveedores = await resProveedores.json();
+        document.getElementById("total-proveedores").textContent =
+            proveedores.length;
+
+        const resClientes = await fetch("http://127.0.0.1:8000/clientes/");
+        const clientes = await resClientes.json();
+        document.getElementById("total-clientes").textContent = clientes.length;
+
+        const resDocumentos = await fetch("http://127.0.0.1:8000/documentos/");
+        const documentos = await resDocumentos.json();
+        const ventas = documentos.filter((d) => d.operacion === "VENTA").length;
+        const compras = documentos.filter(
+            (d) => d.operacion === "COMPRA",
+        ).length;
+        document.getElementById("total-ventas").textContent = ventas;
+        document.getElementById("total-compras").textContent = compras;
+
+        // --- Gráfico: Productos vs Stock ---
+        const ctx1 = document
+            .getElementById("productos-stock-chart")
+            .getContext("2d");
+        new Chart(ctx1, {
+            type: "bar",
+            data: {
+                labels: productos.map((p) => p.nombre),
+                datasets: [
+                    {
+                        label: "Stock actual",
+                        data: productos.map((p) => p.stock_actual),
+                        backgroundColor: "rgba(59, 130, 246, 0.7)",
+                        borderColor: "rgba(59, 130, 246, 1)",
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } },
+            },
+        });
+
+        // --- Gráfico: Ventas y Compras ---
+        const ctx2 = document
+            .getElementById("ventas-compras-chart")
+            .getContext("2d");
+        new Chart(ctx2, {
+            type: "doughnut",
+            data: {
+                labels: ["Ventas", "Compras"],
+                datasets: [
+                    {
+                        data: [ventas, compras],
+                        backgroundColor: [
+                            "rgba(16, 185, 129, 0.7)",
+                            "rgba(239, 68, 68, 0.7)",
+                        ],
+                        borderColor: [
+                            "rgba(16, 185, 129, 1)",
+                            "rgba(239, 68, 68, 1)",
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: "bottom" } },
+            },
+        });
+    }
+
+    cargarDashboard();
+</script>
