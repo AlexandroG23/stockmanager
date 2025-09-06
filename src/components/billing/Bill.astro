@@ -1,0 +1,289 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<div class="w-full max-w-6xl mx-auto p-6">
+    <!-- Encabezado -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
+            Generar Factura Electrónica
+        </h1>
+    </div>
+
+    <!-- Formulario principal -->
+    <form id="form-documento" class="space-y-6">
+        <!-- Datos generales -->
+        <div class="grid md:grid-cols-2 gap-4">
+            <!-- Tipo -->
+            <div class="relative">
+                <select
+                    id="doc-tipo"
+                    required
+                    class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="">Seleccione tipo</option>
+                    <option value="FACTURA">Factura</option>
+                    <option value="BOLETA">Boleta</option>
+                </select>
+                <label
+                    class="absolute left-3 -top-2.5 text-xs text-gray-500 bg-white dark:bg-neutral-900 px-1"
+                >
+                    Tipo de documento
+                </label>
+            </div>
+
+            <!-- Operación -->
+            <div class="relative">
+                <select
+                    id="doc-operacion"
+                    required
+                    class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="">Seleccione operación</option>
+                    <option value="VENTA">Venta</option>
+                    <option value="COMPRA">Compra</option>
+                </select>
+                <label
+                    class="absolute left-3 -top-2.5 text-xs text-gray-500 bg-white dark:bg-neutral-900 px-1"
+                >
+                    Operación
+                </label>
+            </div>
+
+            <!-- Cliente -->
+            <div class="relative">
+                <select
+                    id="doc-cliente"
+                    class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="">Seleccione cliente</option>
+                </select>
+                <label
+                    class="absolute left-3 -top-2.5 text-xs text-gray-500 bg-white dark:bg-neutral-900 px-1"
+                >
+                    Cliente
+                </label>
+            </div>
+
+            <!-- Proveedor -->
+            <div class="relative">
+                <select
+                    id="doc-proveedor"
+                    class="peer w-full p-2 border rounded-lg dark:bg-neutral-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="">Seleccione proveedor</option>
+                </select>
+                <label
+                    class="absolute left-3 -top-2.5 text-xs text-gray-500 bg-white dark:bg-neutral-900 px-1"
+                >
+                    Proveedor
+                </label>
+            </div>
+        </div>
+
+        <!-- Selección de productos -->
+        <div class="space-y-4">
+            <h2 class="text-lg font-semibold dark:text-white">Productos</h2>
+            <div class="flex gap-2">
+                <select
+                    id="producto-select"
+                    class="flex-1 p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
+                >
+                    <option value="">Seleccione producto</option>
+                </select>
+                <input
+                    type="number"
+                    id="producto-cantidad"
+                    placeholder="Cantidad"
+                    class="w-32 p-2 border rounded-lg dark:bg-neutral-800 dark:text-white"
+                />
+                <button
+                    type="button"
+                    id="agregar-producto"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                >
+                    Agregar
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabla de detalle -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm border-collapse">
+                <thead class="bg-gray-100 dark:bg-neutral-700">
+                    <tr>
+                        <th class="p-2">Producto</th>
+                        <th class="p-2">Cantidad</th>
+                        <th class="p-2">Precio</th>
+                        <th class="p-2">Subtotal</th>
+                        <th class="p-2">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody
+                    id="detalle-lista"
+                    class="divide-y dark:divide-neutral-600"
+                >
+                    <!-- JS insertará filas -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totales -->
+        <div class="flex justify-end text-lg font-semibold dark:text-white">
+            Total: S/ <span id="total">0.00</span>
+        </div>
+
+        <!-- Botones -->
+        <div class="flex justify-end gap-3">
+            <button
+                type="reset"
+                class="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
+                >Cancelar</button
+            >
+            <button
+                type="submit"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >Guardar Factura</button
+            >
+        </div>
+    </form>
+</div>
+
+<script is:inline>
+    const clienteSelect = document.getElementById("doc-cliente");
+    const proveedorSelect = document.getElementById("doc-proveedor");
+    const productoSelect = document.getElementById("producto-select");
+    const cantidadInput = document.getElementById("producto-cantidad");
+    const detalleLista = document.getElementById("detalle-lista");
+    const totalEl = document.getElementById("total");
+    const form = document.getElementById("form-documento");
+
+    let productos = [];
+    let clientes = [];
+    let proveedores = [];
+    let detalles = [];
+
+    async function cargarDatos() {
+        clientes = await fetch("http://127.0.0.1:8000/clientes/").then((r) =>
+            r.json(),
+        );
+        proveedores = await fetch("http://127.0.0.1:8000/proveedores/").then(
+            (r) => r.json(),
+        );
+        productos = await fetch("http://127.0.0.1:8000/productos/").then((r) =>
+            r.json(),
+        );
+
+        clientes.forEach((c) => {
+            const opt = document.createElement("option");
+            opt.value = c.id;
+            opt.textContent = c.nombre;
+            clienteSelect.appendChild(opt);
+        });
+        proveedores.forEach((p) => {
+            const opt = document.createElement("option");
+            opt.value = p.id;
+            opt.textContent = p.nombre;
+            proveedorSelect.appendChild(opt);
+        });
+        productos.forEach((p) => {
+            const opt = document.createElement("option");
+            opt.value = p.id;
+            opt.textContent = p.nombre + " (S/ " + p.precio_venta + ")";
+            productoSelect.appendChild(opt);
+        });
+    }
+
+    function renderDetalle() {
+        detalleLista.innerHTML = "";
+        let total = 0;
+        detalles.forEach((d, i) => {
+            const prod = productos.find((p) => p.id == d.producto_id);
+            const subtotal = d.cantidad * (prod ? prod.precio_venta : 0);
+            total += subtotal;
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+        <td class="p-2">${prod?.nombre || "-"}</td>
+        <td class="p-2">${d.cantidad}</td>
+        <td class="p-2">S/ ${prod?.precio_venta || 0}</td>
+        <td class="p-2">S/ ${subtotal.toFixed(2)}</td>
+        <td class="p-2"><button data-index="${i}" class="btn-eliminar text-red-600">❌</button></td>
+      `;
+            detalleLista.appendChild(tr);
+        });
+        totalEl.textContent = total.toFixed(2);
+
+        document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                detalles.splice(e.target.dataset.index, 1);
+                renderDetalle();
+            });
+        });
+    }
+
+    document
+        .getElementById("agregar-producto")
+        .addEventListener("click", () => {
+            const prodId = parseInt(productoSelect.value);
+            const cant = parseInt(cantidadInput.value);
+            if (!prodId || !cant) return;
+            detalles.push({ producto_id: prodId, cantidad: cant });
+            renderDetalle();
+            productoSelect.value = "";
+            cantidadInput.value = "";
+        });
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const payload = {
+            tipo: document.getElementById("doc-tipo").value,
+            numero: "AUTO-" + Date.now(),
+            cliente_id: clienteSelect.value
+                ? parseInt(clienteSelect.value)
+                : null,
+            proveedor_id: proveedorSelect.value
+                ? parseInt(proveedorSelect.value)
+                : null,
+            operacion: document.getElementById("doc-operacion").value,
+            detalles,
+        };
+
+        // 1. Crear documento
+        const res = await fetch("http://127.0.0.1:8000/documentos/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+            alert("❌ Error al crear el documento");
+            return;
+        }
+
+        const documento = await res.json();
+
+        // 2. Descargar PDF
+        const pdfRes = await fetch(
+            `http://127.0.0.1:8000/documentos/${documento.id}/pdf`,
+        );
+        if (!pdfRes.ok) {
+            alert("❌ Error al generar PDF");
+            return;
+        }
+
+        const blob = await pdfRes.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `factura_${documento.id}.pdf`;
+        a.click();
+
+        // alert("✅ Factura generada y PDF descargado");
+        form.reset();
+        detalles = [];
+        renderDetalle();
+    });
+
+    cargarDatos();
+</script>
