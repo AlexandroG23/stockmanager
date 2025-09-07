@@ -9,7 +9,6 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://alexandrog23.github.io/stockmanager',
   base: '/stockmanager',
-  output: 'static',
   integrations: [icon()],
 
   vite: {
