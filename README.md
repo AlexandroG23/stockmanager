@@ -1,43 +1,48 @@
-# Astro Starter Kit: Minimal
+# StockManager
 
-```sh
-npm create astro@latest -- --template minimal
+Bienvenido al repositorio **frontend** de **StockManager**, una plataforma para gestionar tu inventario de forma intuitiva y moderna.
+
+Este frontend está construido con [Astro](https://astro.build/) y utiliza [Tailwind CSS](https://tailwindcss.com/) para estilos rápidos y responsivos. Se conecta a un backend en Python con Fastapi mediante una API REST.
+
+---
+
+## 🚀 Características
+
+-   **Interfaz moderna y responsiva** construida con **Astro y TailwindCSS**.
+-   **Dashboard intuitivo** con métricas clave y **gráficos dinámicos** gracias a Chart.js.
+-   **Gestión completa de inventario**: creación, edición y eliminación de productos, clientes, proveedores y movimientos.
+-   **Consumo en tiempo real** de datos desde el backend desarrollado en **FastAPI**.
+-   **Visualización del stock bajo** para control eficiente de inventario.
+-   **Reportes de ventas y compras** integrados al panel principal.
+-   **Compatibilidad móvil** con diseño adaptado a distintos tamaños de pantalla.
+-   **Arquitectura desacoplada**: frontend ligero conectado a una API REST.
+
+---
+
+## 📸 Capturas de pantalla
+
+![just-the-basics](https://github.com/AlexandroG23/stockmanager/blob/main/src/assets/StockManager.png?raw=true)
+
+![just-the-basics](https://github.com/AlexandroG23/stockmanager/blob/main/src/assets/CategoriaFactura.png?raw=true)
+
+## ⚙️ Instalación local
+
+### Clona este repositorio:
+
+```bash
+git clone https://github.com/AlexandroG23/stockmanager.git
+cd stockmanager
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+### Instala dependencias:
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm install
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### Ejecuta en modo desarrollo:
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+```bash
+npm run dev
+```
+> El proyecto se abrirá en: `http://localhost:4321`
