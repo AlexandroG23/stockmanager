@@ -7,7 +7,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://alexandrog23.github.io/stockmanager',
   base: '/stockmanager',
+  output: 'static',
   integrations: [icon()],
 
   vite: {
